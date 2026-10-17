@@ -1,0 +1,60 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  api:
+    name: API (ruff, mypy, pytest)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: api
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - run: pipx install uv==0.11.3
+      - run: uv sync --frozen
+      - run: uv run ruff check .
+      - run: uv run ruff format --check .
+      - run: uv run mypy
+      - run: uv run pytest
+
+  docker:
+    name: Docker image
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - run: docker build -t shelf-api api
+      - name: Refuses the dev key in production
+        run: |
+          if docker run --rm -e SHELF_API_KEY=dev-key-change-me shelf-api python -c "import app.main"; then
+            echo "expected the image to refuse the dev key" && exit 1
+          fi
+      - name: Serves requests
+        run: |
+          docker run -d --name shelf -p 8000:8000 -e SHELF_API_KEY=ci-only-secret-value shelf-api
+          for i in $(seq 1 30); do curl -fs localhost:8000/ready && break; sleep 1; done
+          curl -fs -X POST localhost:8000/books -H 'X-API-Key: ci-only-secret-value' \
+            -H 'Content-Type: application/json' -d '{"title":"Emma","author":"Jane Austen"}'
+          test "$(docker exec shelf whoami)" = shelf
+          docker rm -f shelf
+
+  site:
+    name: Site (lint, types, tests, build)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run verify
