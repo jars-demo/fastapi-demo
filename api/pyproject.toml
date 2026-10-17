@@ -1,0 +1,45 @@
+[project]
+name = "shelf-api"
+version = "0.1.0"
+description = "Shelf: a small, production-shaped reading-list API built step by step in the FastAPI workshop."
+readme = "../README.md"
+license = "MIT"
+requires-python = ">=3.13,<3.14"
+dependencies = [
+  "fastapi==0.142.2",
+  "uvicorn[standard]==0.54.0",
+  "pydantic==2.13.5",
+  "pydantic-settings==2.15.0",
+  "sqlalchemy==2.1.3",
+]
+
+[dependency-groups]
+dev = [
+  "pytest==9.1.1",
+  "httpx2==2.13.1",
+  "ruff==0.16.10",
+  "mypy==2.4.0",
+]
+
+[tool.uv]
+package = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM", "RUF"]
+
+[tool.ruff.format]
+quote-style = "double"
+
+[tool.mypy]
+python_version = "3.13"
+strict = true
+plugins = ["pydantic.mypy"]
+files = ["app", "tests"]
