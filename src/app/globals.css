@@ -1,0 +1,320 @@
+@import 'tailwindcss';
+
+/* FastAPI workshop tokens: warm paper, ink, one teal accent, frosted glass. */
+:root {
+  --canvas: #fbf8f1;
+  --surface: #ffffff;
+  --surface-2: #f3efe6;
+  --ink: #141412;
+  --ink-2: #34322d;
+  --muted: #6b675f;
+  --hairline: rgb(20 20 18 / 0.07);
+  --accent: #14b8a6;
+  --accent-text: #0f766e;
+  --accent-wash: #e7f6f2;
+  --glass-fill: rgb(255 255 255 / 0.58);
+  --glass-fill-strong: rgb(255 255 255 / 0.86);
+  --glass-edge: rgb(255 255 255 / 0.85);
+  --glass-line: rgb(20 20 18 / 0.05);
+  --shadow-soft: 0 1px 1px rgb(20 20 18 / 0.02), 0 6px 20px rgb(20 20 18 / 0.04);
+  --shadow-lift: 0 1px 2px rgb(20 20 18 / 0.03), 0 24px 64px rgb(20 20 18 / 0.08);
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  color-scheme: light;
+}
+
+@theme inline {
+  --color-canvas: var(--canvas);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-muted: var(--muted);
+  --color-hairline: var(--hairline);
+  --color-accent: var(--accent);
+  --color-accent-text: var(--accent-text);
+  --color-accent-wash: var(--accent-wash);
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  --font-display: var(--font-instrument-serif), ui-serif, Georgia, serif;
+  --shadow-soft: var(--shadow-soft);
+  --shadow-lift: var(--shadow-lift);
+  --radius-card: 1.25rem;
+  --radius-panel: 1.75rem;
+}
+
+body {
+  background: var(--canvas);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  letter-spacing: -0.006em;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(44% 50% at 12% 4%, rgb(190 238 226 / 0.6), transparent 70%),
+    radial-gradient(40% 46% at 90% 0%, rgb(255 216 190 / 0.55), transparent 70%),
+    radial-gradient(36% 40% at 82% 72%, rgb(206 236 250 / 0.45), transparent 70%),
+    radial-gradient(34% 38% at 12% 92%, rgb(255 230 205 / 0.45), transparent 70%);
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 0.5rem;
+}
+
+.glass,
+.glass-strong {
+  background: var(--glass-fill);
+  -webkit-backdrop-filter: blur(24px) saturate(170%);
+  backdrop-filter: blur(24px) saturate(170%);
+  box-shadow:
+    inset 0 1px 0 var(--glass-edge),
+    0 0 0 1px var(--glass-line),
+    var(--shadow-soft);
+}
+
+.glass-strong {
+  background: var(--glass-fill-strong);
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .glass,
+  .glass-strong {
+    background: var(--surface);
+    backdrop-filter: none;
+  }
+}
+
+.text-gradient {
+  background: linear-gradient(100deg, #0f766e 0%, #0d9488 45%, #047857 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  padding-right: 0.06em;
+}
+
+/* Gentle idle bounce for the shelf's little book. */
+.idle-bob {
+  animation: idle-bob 3.2s ease-in-out infinite;
+  transform-origin: 50% 100%;
+}
+
+@keyframes idle-bob {
+  50% {
+    transform: translateY(-6px) rotate(-1.5deg);
+  }
+}
+
+.rise {
+  animation: rise 700ms var(--ease-out) both;
+  animation-delay: var(--delay, 0ms);
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+    filter: blur(4px);
+  }
+}
+
+.lift {
+  transition:
+    transform 400ms var(--ease-out),
+    box-shadow 400ms var(--ease-out);
+}
+
+@media (hover: hover) {
+  .lift:hover {
+    transform: translateY(-6px) rotate(-0.6deg);
+    box-shadow:
+      inset 0 1px 0 var(--glass-edge),
+      0 0 0 1px var(--glass-line),
+      var(--shadow-lift);
+  }
+}
+
+/* Workshop prose. */
+.prose-workshop {
+  font-size: 16.5px;
+  line-height: 1.75;
+  color: var(--ink-2);
+}
+
+.prose-workshop h2 {
+  margin: 2.5rem 0 0.75rem;
+  font-family: var(--font-display);
+  font-size: 2.1rem;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.prose-workshop h3 {
+  margin: 1.75rem 0 0.5rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.prose-workshop p,
+.prose-workshop ul,
+.prose-workshop ol {
+  margin: 0.75rem 0;
+}
+
+.prose-workshop ul {
+  list-style: disc;
+  padding-left: 1.4rem;
+}
+
+.prose-workshop ol {
+  list-style: decimal;
+  padding-left: 1.4rem;
+}
+
+.prose-workshop a {
+  color: var(--accent-text);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.prose-workshop :not(pre) > code {
+  padding: 0.1rem 0.35rem;
+  border-radius: 0.4rem;
+  background: var(--surface-2);
+  font-family: var(--font-mono);
+  font-size: 0.88em;
+  color: var(--ink);
+}
+
+.prose-workshop pre {
+  margin: 0;
+  overflow-x: auto;
+  padding: 1rem 1.1rem;
+  border-radius: 1rem;
+  background: #1c1b18;
+  color: #f5f2ea;
+  font-family: var(--font-mono);
+  font-size: 13.5px;
+  line-height: 1.6;
+}
+
+.prose-workshop blockquote {
+  margin: 1rem 0;
+  padding: 0.75rem 1rem;
+  border-left: 3px solid var(--accent);
+  border-radius: 0 0.75rem 0.75rem 0;
+  background: var(--accent-wash);
+  color: var(--ink-2);
+}
+
+.prose-workshop table {
+  width: 100%;
+  margin: 1rem 0;
+  border-collapse: collapse;
+  font-size: 15px;
+}
+
+.prose-workshop th,
+.prose-workshop td {
+  padding: 0.5rem 0.6rem;
+  border-bottom: 1px solid var(--hairline);
+  text-align: left;
+}
+
+/* Shelfie blinks now and then. */
+.blink {
+  animation: blink 5s infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+@keyframes blink {
+  0%,
+  92%,
+  100% {
+    transform: scaleY(1);
+  }
+  95% {
+    transform: scaleY(0.1);
+  }
+}
+
+/* Books lean a little when you hover the shelf. */
+.book {
+  transition: transform 500ms var(--ease-out);
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+}
+
+@media (hover: hover) {
+  .shelf:hover .book:nth-child(odd) {
+    transform: rotate(-4deg);
+  }
+  .shelf:hover .book:nth-child(even) {
+    transform: translateY(-6px);
+  }
+}
+
+/* Fade between the steps of the live API demo. */
+.swap {
+  animation: swap 450ms var(--ease-out) both;
+}
+
+@keyframes swap {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .blink,
+  .swap,
+  .idle-bob,
+  .rise {
+    animation: none;
+  }
+
+  .lift,
+  .book {
+    transition: none;
+  }
+}
+
+.prose-workshop .code-block {
+  position: relative;
+  margin: 1rem 0;
+}
+
+.prose-workshop .code-block pre {
+  padding-top: 3rem;
+}
+
+.prose-workshop .code-block > button {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.6rem;
+}
+
+.prose-workshop input[type='checkbox'] {
+  margin-right: 0.4rem;
+  accent-color: var(--accent-text);
+}
+
+.prose-workshop ul:has(input[type='checkbox']) {
+  list-style: none;
+  padding-left: 0.2rem;
+}
